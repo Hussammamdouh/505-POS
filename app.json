@@ -1,17 +1,29 @@
 {
   "expo": {
-    "name": "pos",
-    "slug": "pos",
+    "name": "Cafe POS",
+    "slug": "cafe-pos",
+    "scheme": "cafepos",
     "version": "1.0.0",
-    "orientation": "portrait",
+    "orientation": "landscape",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "isTabletOnly": true,
+      "requireFullScreen": true,
+      "bundleIdentifier": "com.cafe505.pos",
+      "infoPlist": {
+        "NSLocalNetworkUsageDescription": "Cafe POS connects to the receipt printer on the cafe network.",
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
+      "package": "com.cafepos.register",
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
+        "backgroundColor": "#040205",
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
@@ -19,7 +31,44 @@
       "predictiveBackGestureEnabled": false
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/favicon.png",
+      "output": "single"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-status-bar",
+      "expo-sqlite",
+      "expo-secure-store",
+      [
+        "expo-screen-orientation",
+        {
+          "initialOrientation": "LANDSCAPE"
+        }
+      ],
+      "expo-audio",
+      "expo-asset",
+      [
+        "expo-image-picker",
+        {
+          "cameraPermission": "Cafe POS uses the camera to photograph expense receipts.",
+          "photosPermission": "Cafe POS attaches receipt photos you pick to expenses.",
+          "microphonePermission": false
+        }
+      ],
+      "./plugins/with-android-cmake-version",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 260,
+          "backgroundColor": "#040205",
+          "resizeMode": "contain"
+        }
+      ],
+      "expo-font"
+    ],
+    "experiments": {
+      "typedRoutes": true
     }
   }
 }

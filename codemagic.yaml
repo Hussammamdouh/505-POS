@@ -1,21 +1,21 @@
 # Codemagic: builds the iPad app and uploads it to TestFlight.
-# Before the first run, fill in the two values marked FILL IN.
+# App Store Connect app: 505 Coffee POS (com.cafe505.pos).
 workflows:
   ios-testflight:
     name: iOS → TestFlight
     max_build_duration: 60
     instance_type: mac_mini_m2
     integrations:
-      # FILL IN: the name you gave the App Store Connect API key in Codemagic
+      # The name of the App Store Connect API key in Codemagic
       # (Team settings → Integrations → Developer Portal).
-      app_store_connect: ASC API key
+      app_store_connect: code magic
     environment:
       ios_signing:
         distribution_type: app_store
         bundle_identifier: com.cafe505.pos
       vars:
-        # FILL IN: the numeric "Apple ID" of the app (App Store Connect → the app → App Information).
-        APP_STORE_APPLE_ID: 0000000000
+        # The numeric "Apple ID" of the app (App Store Connect → the app → App Information).
+        APP_STORE_APPLE_ID: 6836797630
         # Expo names the native project after "name" in app.json ("Cafe POS" → CafePOS).
         XCODE_WORKSPACE: ios/CafePOS.xcworkspace
         XCODE_SCHEME: CafePOS

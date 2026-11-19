@@ -1,19 +1,28 @@
 # Codemagic: builds the iPad app and uploads it to TestFlight.
 # App Store Connect app: 505 Coffee POS (com.cafe505.pos).
+#
+# Signing is done with the App Store Connect API key, so nothing has to be created by hand in the
+# Apple Developer portal: each build finds (or creates) the App Store provisioning profile itself.
+# Needs the Codemagic environment variable group "app_store_signing" (Team settings → Global variables
+# and secrets), every variable marked Secure:
+#   APP_STORE_CONNECT_ISSUER_ID       Issuer ID of the API key
+#   APP_STORE_CONNECT_KEY_IDENTIFIER  Key ID of the API key
+#   APP_STORE_CONNECT_PRIVATE_KEY     full text of the AuthKey_XXXX.p8 file
+#   CERTIFICATE_PRIVATE_KEY           private key of the distribution certificate (taken out of the .p12)
 workflows:
   ios-testflight:
     name: iOS → TestFlight
     max_build_duration: 60
     instance_type: mac_mini_m2
     integrations:
-      # The name of the App Store Connect API key in Codemagic
-      # (Team settings → Integrations → Developer Portal).
+      # The App Store Connect API key in Codemagic (Team settings → Integrations → Developer Portal),
+      # used for the TestFlight upload.
       app_store_connect: code magic
     environment:
-      ios_signing:
-        distribution_type: app_store
-        bundle_identifier: com.cafe505.pos
+      groups:
+        - app_store_signing
       vars:
+        BUNDLE_ID: com.cafe505.pos
         # The numeric "Apple ID" of the app (App Store Connect → the app → App Information).
         APP_STORE_APPLE_ID: 6836797630
         # Expo names the native project after "name" in app.json ("Cafe POS" → CafePOS).
@@ -26,10 +35,14 @@ workflows:
       - name: Install dependencies
         script: npm ci
       - name: Generate the iOS project
-        # ios/ is not committed; prebuild creates it from app.json and runs pod install.
+        # ios/ is not committed; prebuild creates it from app.json, then CocoaPods installs the native modules.
         script: npx expo prebuild --platform ios --clean --no-install && cd ios && pod install
-      - name: Apply signing profiles
-        script: xcode-project use-profiles
+      - name: Fetch or create signing files
+        script: |
+          keychain initialize
+          app-store-connect fetch-signing-files "$BUNDLE_ID" --type IOS_APP_STORE --create
+          keychain add-certificates
+          xcode-project use-profiles
       - name: Set build number
         script: |
           LATEST=$(app-store-connect get-latest-testflight-build-number "$APP_STORE_APPLE_ID" 2>/dev/null || echo 0)

@@ -3,7 +3,7 @@
 #
 # Signing is done with the App Store Connect API key, so nothing has to be created by hand in the
 # Apple Developer portal: each build finds (or creates) the App Store provisioning profile itself.
-# Needs the Codemagic environment variable group "app_store_signing" (Team settings → Global variables
+# Needs the Codemagic environment variable group "505 env" (Team settings → Global variables
 # and secrets), every variable marked Secure:
 #   APP_STORE_CONNECT_ISSUER_ID       Issuer ID of the API key
 #   APP_STORE_CONNECT_KEY_IDENTIFIER  Key ID of the API key
@@ -20,7 +20,7 @@ workflows:
       app_store_connect: code magic
     environment:
       groups:
-        - app_store_signing
+        - "505 env"
       vars:
         BUNDLE_ID: com.cafe505.pos
         # The numeric "Apple ID" of the app (App Store Connect → the app → App Information).

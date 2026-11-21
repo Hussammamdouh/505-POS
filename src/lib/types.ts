@@ -705,3 +705,68 @@ export interface ShiftOrder {
   items: { name: string; quantity: number; lineTotal: number; modifiers: string[]; isFree: boolean }[];
   payments: { method: PaymentMethod; amount: number; amountTendered: number | null; changeGiven: number; referenceNumber: string | null; createdAt: string }[];
 }
+
+/** Result of receiving a whole delivery (Stock → Receive delivery). */
+export interface ShipmentResult {
+  items: InventoryItem[];
+  lines: number;
+  totalCost: number;
+  /** Names of ingredients that were new and created by this delivery. */
+  createdItems: string[];
+}
+
+/** Admin → Customers: one loyalty customer (register phone-only or website account). */
+export interface LoyaltyCustomer {
+  id: string;
+  fullName: string | null;
+  phone: string | null;
+  email: string | null;
+  hasWebsiteAccount: boolean;
+  emailVerified: boolean;
+  inStoreOrders: number;
+  websiteOrders: number;
+  totalSpent: number;
+  stamps: number;
+  rewardDue: boolean;
+  freeDrinksRedeemed: number;
+  lastOrderAt: string | null;
+  createdAt: string;
+}
+
+export interface LoyaltyCustomerList {
+  ordersForReward: number;
+  cardIsActive: boolean;
+  totalCustomers: number;
+  websiteAccounts: number;
+  rewardsDue: number;
+  customers: LoyaltyCustomer[];
+}
+
+export interface LoyaltyCustomerOrder {
+  id: string;
+  displayCode: string;
+  channel: OrderChannel;
+  status: OrderStatus;
+  paymentStatus: string;
+  netAmountDue: number;
+  refunded: number;
+  hadFreeDrink: boolean;
+  countsAsStamp: boolean;
+  createdAt: string;
+}
+
+export interface StaffLoanEntry {
+  id: string;
+  staffId: string;
+  staffName: string;
+  amount: number;
+  reason: string;
+  recordedByName: string;
+  createdAt: string;
+}
+
+export interface StaffLoanMonth {
+  month: string;
+  total: number;
+  loans: StaffLoanEntry[];
+}

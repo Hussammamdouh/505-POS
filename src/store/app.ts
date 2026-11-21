@@ -25,7 +25,7 @@ interface AppState {
   connectivity: Connectivity;
   catalog: CatalogCategory[];
   catalogUpdatedAt: string | null;
-  /** Items sold per menu item over the last 30 days, so the register shows the favourites first. */
+  /** Items sold per menu item over the last 45 days, so the register shows the favourites first. */
   popularity: Record<string, number>;
   shift: CachedShift | null;
   unsyncedCount: number;

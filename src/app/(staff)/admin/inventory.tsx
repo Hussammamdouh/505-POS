@@ -1,3 +1,4 @@
+import { router } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
@@ -88,7 +89,15 @@ export default function InventoryAdminScreen() {
             />
           </KpiRow>
           <View style={styles.columns}>
-            <Panel title="Ingredients" style={styles.list} action={admin ? <Button label="+ New" onPress={() => openItem('new')} /> : null}>
+            <Panel
+              title="Ingredients"
+              style={styles.list}
+              action={
+                <View style={styles.listActions}>
+                  <Button label="Receive delivery" variant="secondary" onPress={() => router.replace('/stock?view=delivery')} />
+                  {admin ? <Button label="+ New" onPress={() => openItem('new')} /> : null}
+                </View>
+              }>
               {list.map((candidate) => (
                 <ListRow
                   key={candidate.id}
@@ -126,7 +135,7 @@ export default function InventoryAdminScreen() {
                     {UNIT_LABELS[item.unitOfMeasure]} · worth {compactEgp(item.stockValue)} EGP · used in {item.usedInRecipes} recipe(s)
                   </Text>
                   <View style={styles.actions}>
-                    <Button label="Receive delivery" onPress={() => setPane({ kind: 'move', movement: 'PURCHASE_RECEIPT' })} />
+                    <Button label="Receive this item" onPress={() => setPane({ kind: 'move', movement: 'PURCHASE_RECEIPT' })} />
                     <Button label="Stock count" variant="secondary" onPress={() => setPane({ kind: 'move', movement: 'AUDIT_ADJUSTMENT' })} />
                     <Button label="Log waste" variant="secondary" onPress={() => setPane({ kind: 'move', movement: 'WASTE_SPOILAGE' })} />
                     {admin ? <Button label="Edit" variant="ghost" onPress={() => setPane({ kind: 'edit' })} /> : null}
@@ -168,6 +177,7 @@ const styles = StyleSheet.create({
   toolbar: { flexDirection: 'row', justifyContent: 'space-between' },
   columns: { flex: 1, flexDirection: 'row', gap: space.md },
   list: { width: 380 },
+  listActions: { flexDirection: 'row', gap: space.sm },
   detail: { flex: 1 },
   big: { fontSize: 28, fontWeight: '600', color: colors.text },
   hint: { fontSize: font.small, color: colors.textMuted },

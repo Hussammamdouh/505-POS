@@ -19,7 +19,7 @@ const errorText = (error: unknown) => (error instanceof NetworkError ? 'Ingredie
 export const sortForAttention = (items: InventoryItem[]) =>
   items.filter((item) => item.isActive).sort((a, b) => Number(b.isLow) - Number(a.isLow) || a.name.localeCompare(b.name));
 
-/** Ingredient levels for every staff member, with waste logging (the only stock change baristas may make). */
+/** Ingredient levels with waste logging (Stock → Ingredients, managers and admins). */
 export function IngredientLevels() {
   const [items, setItems] = useState<InventoryItem[] | null>(null);
   const [wasting, setWasting] = useState<InventoryItem | null>(null);

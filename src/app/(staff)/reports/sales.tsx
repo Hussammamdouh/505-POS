@@ -71,7 +71,7 @@ const ITEM_COLUMNS: Column<Item>[] = [
 ];
 
 export default function SalesReportScreen() {
-  const [range, setRange] = useState<DateRange>(presetRange('week'));
+  const [range, setRange] = useState<DateRange>(presetRange('last45'));
   const { data: sales, error, loading } = useReport(loadSalesInsights, range);
 
   const overTime = sales ? salesOverTime(sales.byDay) : null;
@@ -92,7 +92,7 @@ export default function SalesReportScreen() {
 
   return (
     <ScrollView contentContainerStyle={styles.content}>
-      <DateRangeBar initial="week" onChange={setRange} />
+      <DateRangeBar initial="last45" onChange={setRange} />
       {error ? <Banner tone="danger" message={error} /> : null}
       {loading && !sales ? <Text style={styles.muted}>Loading…</Text> : null}
 

@@ -10,12 +10,16 @@ import { Button } from '../Button';
 import { Field } from '../Field';
 import { colors, font, radius, space } from '../theme';
 
-export type Preset = 'today' | 'yesterday' | 'week' | 'month' | 'lastMonth' | 'custom';
+export type Preset = 'today' | 'yesterday' | 'week' | 'last45' | 'month' | 'lastMonth' | 'custom';
+
+/** The owner's standard analysis window. */
+export const ANALYSIS_DAYS = 45;
 
 const PRESETS: { value: Preset; label: string }[] = [
   { value: 'today', label: 'Today' },
   { value: 'yesterday', label: 'Yesterday' },
   { value: 'week', label: 'Last 7 days' },
+  { value: 'last45', label: `Last ${ANALYSIS_DAYS} days` },
   { value: 'month', label: 'This month' },
   { value: 'lastMonth', label: 'Last month' },
   { value: 'custom', label: 'Custom' },
@@ -31,6 +35,8 @@ export function presetRange(preset: Exclude<Preset, 'custom'>): DateRange {
       return { from: addDays(today, -1), to: addDays(today, -1) };
     case 'week':
       return { from: addDays(today, -6), to: today };
+    case 'last45':
+      return { from: addDays(today, 1 - ANALYSIS_DAYS), to: today };
     case 'month':
       return { from: monthStart, to: today };
     case 'lastMonth': {

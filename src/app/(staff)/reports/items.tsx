@@ -43,7 +43,7 @@ const COLUMNS: Column<ItemProfit>[] = [
 ];
 
 export default function ItemProfitScreen() {
-  const [range, setRange] = useState<DateRange>(presetRange('month'));
+  const [range, setRange] = useState<DateRange>(presetRange('last45'));
   const [sort, setSort] = useState<Sort>('profit');
   const { data: report, error, loading } = useReport(loadItemProfitability, range);
 
@@ -59,7 +59,7 @@ export default function ItemProfitScreen() {
 
   return (
     <ScrollView contentContainerStyle={styles.content}>
-      <DateRangeBar initial="month" onChange={setRange} />
+      <DateRangeBar initial="last45" onChange={setRange} />
       {error ? <Banner tone="danger" message={error} /> : null}
       {loading && !report ? <Text style={styles.muted}>Loading…</Text> : null}
       {missingCost > 0 ? (

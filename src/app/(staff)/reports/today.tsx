@@ -52,7 +52,7 @@ export default function TodayReportScreen() {
               </>
             ) : (
               <Text style={styles.muted}>
-                The break-even target appears once there are sales in the last 30 days and fixed costs (rent, salaries) are set up under
+                The break-even target appears once there are sales in the last 45 days and fixed costs (rent, salaries) are set up under
                 Admin → Expenses.
               </Text>
             )}
@@ -65,7 +65,7 @@ export default function TodayReportScreen() {
         <StatTile
           label="Profit after ingredients"
           value={compactEgp(breakEven.currentContributionMargin)}
-          caption={breakEven.contributionMarginPercentage !== null ? `${breakEven.contributionMarginPercentage}% average margin (30 days)` : undefined}
+          caption={breakEven.contributionMarginPercentage !== null ? `${breakEven.contributionMarginPercentage}% average margin (45 days)` : undefined}
         />
         <StatTile
           label="Profit so far today"

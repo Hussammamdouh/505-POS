@@ -10,6 +10,7 @@ import type {
   RecipeBook,
   RecipeIngredient,
   RecipeSection,
+  ShipmentResult,
 } from './types';
 
 export const loadInventory = () => apiRequest<InventoryItem[]>('GET', '/api/v1/inventory/items');
@@ -108,3 +109,27 @@ export const RECIPE_SECTION_LABELS: Record<RecipeSection, string> = {
   ADD_ON: 'Add-on',
   OTHER: 'Other',
 };
+
+export interface ShipmentLineRequest {
+  inventoryItemId: string | null;
+  newItem: { name: string; unitOfMeasure: InventoryUnit; recipeSection: RecipeSection | null } | null;
+  quantity: number;
+  entryUnit: InventoryUnit | null;
+  totalCost: number | null;
+}
+
+export interface ReceiveShipmentRequest {
+  supplierName: string | null;
+  paymentSource: ExpensePaymentSource | null;
+  notes: string | null;
+  lines: ShipmentLineRequest[];
+}
+
+/** A whole delivery in one go; new ingredients on it are created by the server. Prices change recipe costs, so the menu is refreshed. */
+export async function receiveShipment(body: ReceiveShipmentRequest) {
+  const result = await apiRequest<ShipmentResult>('POST', '/api/v1/inventory/shipments', { body });
+  if (result.totalCost > 0) {
+    void refreshCatalog().catch(() => undefined);
+  }
+  return result;
+}

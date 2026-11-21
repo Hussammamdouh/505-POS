@@ -8,6 +8,7 @@ export const ADMIN_SECTIONS: Section[] = [
   { label: 'Recipes', href: '/admin/recipes', allowed: isAdmin },
   { label: 'Staff', href: '/admin/staff', allowed: isAdmin },
   { label: 'Promos & loyalty', href: '/admin/promos', allowed: isAdmin },
+  { label: 'Customers', href: '/admin/customers', allowed: isAdmin },
   { label: 'Inventory', href: '/admin/inventory', allowed: canManage },
   { label: 'Attendance', href: '/admin/attendance', allowed: canManage },
   { label: 'Schedule', href: '/admin/schedule', allowed: canManage },

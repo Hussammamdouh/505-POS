@@ -1,16 +1,20 @@
+import { useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
 
 import { apiRequest, describeError, NetworkError } from '@/lib/api';
 import { refreshCatalog } from '@/lib/catalog';
 import type { StockBoard } from '@/lib/types';
+import { canManage, useApp } from '@/store/app';
 import { Segments } from '@/ui/admin/AdminKit';
 import { Banner } from '@/ui/Banner';
 import { Field } from '@/ui/Field';
 import { IngredientLevels } from '@/ui/inventory/IngredientLevels';
+import { ShipmentForm } from '@/ui/inventory/ShipmentForm';
 import { colors, font, radius, space } from '@/ui/theme';
 
 type Kind = 'items' | 'modifiers';
+type Mode = 'menu' | 'delivery' | 'ingredients';
 
 interface StockRow {
   id: string;
@@ -21,7 +25,15 @@ interface StockRow {
 
 export default function StockScreen() {
   const [board, setBoard] = useState<StockBoard | null>(null);
-  const [mode, setMode] = useState<'menu' | 'ingredients'>('menu');
+  const manager = canManage(useApp((state) => state.session));
+  const { view } = useLocalSearchParams<{ view?: string }>();
+  const [mode, setMode] = useState<Mode>(view === 'delivery' ? 'delivery' : 'menu');
+  // Cashiers switch items in and out of stock and receive deliveries; ingredient levels and waste are for managers.
+  const modes: { value: Mode; label: string }[] = [
+    { value: 'menu', label: 'Sold-out switches' },
+    { value: 'delivery', label: 'Receive delivery' },
+    ...(manager ? [{ value: 'ingredients' as const, label: 'Ingredients' }] : []),
+  ];
   const [filter, setFilter] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState<string | null>(null);
@@ -64,18 +76,11 @@ export default function StockScreen() {
   const modifiers: StockRow[] = (board?.modifiers ?? []).map((modifier) => ({ ...modifier, group: modifier.groupName })).filter(matches);
   const soldOut = [...(board?.items ?? []), ...(board?.modifiers ?? [])].filter((row) => !row.isInStock).length;
 
-  if (mode === 'ingredients') {
+  if (mode !== 'menu') {
     return (
       <View style={styles.screen}>
-        <Segments
-          options={[
-            { value: 'menu', label: 'Sold-out switches' },
-            { value: 'ingredients', label: 'Ingredients' },
-          ]}
-          value={mode}
-          onChange={setMode}
-        />
-        <IngredientLevels />
+        <Segments options={modes} value={mode} onChange={setMode} />
+        {mode === 'delivery' ? <ShipmentForm /> : <IngredientLevels />}
       </View>
     );
   }
@@ -83,14 +88,7 @@ export default function StockScreen() {
   return (
     <View style={styles.screen}>
       <View style={styles.toolbar}>
-        <Segments
-          options={[
-            { value: 'menu', label: 'Sold-out switches' },
-            { value: 'ingredients', label: 'Ingredients' },
-          ]}
-          value={mode}
-          onChange={setMode}
-        />
+        <Segments options={modes} value={mode} onChange={setMode} />
         <View style={styles.search}>
           <Field label="Find" value={filter} onChangeText={setFilter} placeholder="Item, option or category" autoCorrect={false} />
         </View>

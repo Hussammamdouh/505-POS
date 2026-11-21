@@ -16,12 +16,14 @@ import { useCompact } from './useCompact';
 
 type IconName = ComponentProps<typeof MaterialCommunityIcons>['name'];
 
+// Cashiers (baristas) see Register, Website, Orders, Stock, Shift, Loans and Clock-in; the rest is for managers and admins.
 const TABS: { label: string; icon: IconName; href: Href; section?: { prefix: string; pages: Section[] }; managerOnly?: boolean; registerOnly?: boolean }[] = [
   { label: 'Register', icon: 'cash-register', href: '/register', registerOnly: true },
   { label: 'Website', icon: 'web', href: '/website', registerOnly: true },
   { label: 'Orders', icon: 'receipt-text-outline', href: '/orders' },
   { label: 'Stock', icon: 'package-variant-closed', href: '/stock' },
   { label: 'Shift', icon: 'cash-multiple', href: '/shift' },
+  { label: 'Loans', icon: 'hand-coin-outline', href: '/loans' },
   { label: 'Clock-in', icon: 'clock-outline', href: '/clock' },
   { label: 'Penalties', icon: 'gavel', href: '/penalties', managerOnly: true },
   { label: 'Reports', icon: 'chart-bar', href: '/reports/today', section: { prefix: '/reports', pages: REPORT_SECTIONS }, managerOnly: true },
@@ -177,11 +179,11 @@ const styles = StyleSheet.create({
     gap: 2,
     borderRadius: radius.md,
   },
-  tabCompact: { minWidth: 58, minHeight: 54, paddingHorizontal: 4 },
+  tabCompact: { minWidth: 52, minHeight: 54, paddingHorizontal: 2 },
   tabActive: { backgroundColor: colors.surface },
   tabPressed: { backgroundColor: 'rgba(255, 255, 255, 0.12)' },
   tabText: { fontSize: 13, fontWeight: '600', color: MUTED_ON_PRIMARY },
-  tabTextCompact: { fontSize: 12 },
+  tabTextCompact: { fontSize: 11 },
   tabTextActive: { color: colors.primary, fontWeight: '800' },
   badge: {
     position: 'absolute',
@@ -234,7 +236,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255, 255, 255, 0.1)',
     maxWidth: 210,
   },
-  userCompact: { paddingRight: space.sm, maxWidth: 150 },
+  userCompact: { paddingRight: space.sm, maxWidth: 130 },
   avatar: { width: 34, height: 34, borderRadius: 17, backgroundColor: colors.accent, alignItems: 'center', justifyContent: 'center' },
   avatarText: { fontSize: font.body, fontWeight: '800', color: colors.onAccent },
   userName: { fontSize: font.body, fontWeight: '700', color: colors.onPrimary },

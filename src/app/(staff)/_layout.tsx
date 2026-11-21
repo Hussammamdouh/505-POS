@@ -5,13 +5,15 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { startChime, stopChime } from '@/lib/chime';
 import { startLiveOrders, stopLiveOrders } from '@/lib/liveOrders';
-import { useApp } from '@/store/app';
+import { canManage, useApp } from '@/store/app';
 import { Banner } from '@/ui/Banner';
 import { colors, font, radius, space } from '@/ui/theme';
 import { TopBar } from '@/ui/TopBar';
 
 // Hidden when a manager or admin signed in to view the system rather than run the register.
 const REGISTER_ONLY_PATHS = ['/register', '/website'];
+// Cashiers (baristas) only use Register, Website, Orders, Stock, Shift, Loans and Clock-in.
+const MANAGER_ONLY_PATHS = ['/shifts/', '/penalties', '/reports', '/admin', '/settings'];
 
 export default function StaffLayout() {
   const session = useApp((state) => state.session);
@@ -19,6 +21,7 @@ export default function StaffLayout() {
   const syncNeedsLogin = useApp((state) => state.syncNeedsLogin);
   const unsyncedCount = useApp((state) => state.unsyncedCount);
   const viewingSystem = useApp((state) => state.workspace === 'system');
+  const manager = canManage(session);
   // The back office (often another device) never rings or asks to accept online orders; the register does.
   const pendingCount = useApp((state) => (viewingSystem ? 0 : state.openOrders.filter((order) => order.status === 'PENDING').length));
   const pendingWebsite = useApp((state) => state.openOrders.some((order) => order.channel === 'WEB' && order.status === 'PENDING'));
@@ -48,6 +51,10 @@ export default function StaffLayout() {
 
   if (!session) {
     return <Redirect href="/login" />;
+  }
+
+  if (!manager && MANAGER_ONLY_PATHS.some((path) => pathname.startsWith(path))) {
+    return <Redirect href="/register" />;
   }
 
   if (viewingSystem && REGISTER_ONLY_PATHS.some((path) => pathname.startsWith(path))) {
